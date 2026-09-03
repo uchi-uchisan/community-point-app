@@ -29,7 +29,7 @@
   .mountain-band { width: 100%; aspect-ratio: 800 / 230; display: block; line-height: 0; }
   .mountain-band svg { width: 100%; height: 100%; display: block; }
 
-  .auth-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  .auth-bar { display: flex; align-items: center; justify-content: flex-end; gap: 10px;
     background: var(--ink); padding: 10px 18px; }
   .auth-bar span { color: var(--mint); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.02em; }
   .auth-bar button { background: transparent; border: 1px solid rgba(175,220,201,0.4); color: var(--mint);
@@ -147,10 +147,10 @@
         </linearGradient>
       </defs>
       <circle cx="340" cy="140" r="110" fill="url(#sunGrad)"/>
-      <path d="M0,110 C70,70 120,40 170,50 C230,62 290,90 340,95 C400,88 480,50 560,35 C630,25 700,55 800,80 L800,230 L0,230 Z" fill="#DCEFE4"/>
-      <path d="M0,140 C80,105 140,70 190,80 C250,92 300,115 340,125 C400,115 470,80 550,65 C620,55 700,85 800,110 L800,230 L0,230 Z" fill="#B7E0CD"/>
-      <path d="M0,170 C90,140 150,105 200,112 C260,120 310,140 350,150 C410,140 480,110 560,98 C630,90 710,115 800,140 L800,230 L0,230 Z" fill="#8FC7AE"/>
-      <path d="M0,200 C100,175 160,145 210,150 C270,156 320,172 360,180 C420,172 490,148 570,138 C640,132 720,155 800,172 L800,230 L0,230 Z" fill="#15140F"/>
+      <path d="M0,110 C40,95 60,80 90,85 C120,90 140,55 170,50 C200,45 220,65 250,60 C280,55 300,75 340,95 C380,90 400,60 430,55 C460,50 480,70 510,60 C540,50 555,32 580,30 C610,28 630,45 660,42 C690,39 710,55 740,60 C765,64 785,72 800,80 L800,230 L0,230 Z" fill="#DCEFE4"/>
+      <path d="M0,140 C35,128 65,110 95,118 C125,126 145,95 175,90 C205,85 225,105 255,100 C285,95 305,118 340,125 C378,120 398,92 428,88 C458,84 478,102 508,95 C538,88 552,68 578,65 C608,62 628,80 658,76 C688,72 708,90 738,95 C765,99 785,105 800,110 L800,230 L0,230 Z" fill="#B7E0CD"/>
+      <path d="M0,170 C38,160 68,145 98,150 C128,155 148,125 178,120 C208,115 228,132 258,128 C288,124 308,145 350,150 C385,146 405,120 432,115 C458,110 478,128 505,120 C535,112 550,95 575,98 C605,101 625,115 655,112 C685,109 705,128 735,132 C762,136 782,142 800,140 L800,230 L0,230 Z" fill="#8FC7AE"/>
+      <path d="M0,200 C40,192 70,178 100,182 C130,186 155,158 185,155 C215,152 232,168 262,165 C292,162 315,178 360,180 C395,176 415,152 442,148 C468,144 488,160 515,155 C542,150 555,135 575,138 C605,142 625,155 655,152 C685,149 708,165 738,168 C762,171 782,175 800,172 L800,230 L0,230 Z" fill="#15140F"/>
     </svg>
   </div>
 </header>
@@ -159,7 +159,7 @@
   <main>
     <p class="section-lead">はじめての方も、登録済みの方もこちらから</p>
     <div class="card">
-      <h2>すでに登録した方</h2>
+      <h2>登録済みの方</h2>
       <div id="login-status"></div>
       <label for="login-email">メールアドレス</label>
       <input id="login-email" type="email" placeholder="登録時に入力したメールアドレス">
@@ -169,7 +169,9 @@
       <button type="button" class="link-btn" id="login-forgot-link">パスワードを忘れた場合はこちら</button>
 
       <div id="reset-box" class="banner" style="display:none;margin-top:14px;">
-        <p class="hint" id="reset-step1-text" style="margin-top:0;">上で入力したメールアドレスへ確認コードを送ります。</p>
+        <p class="hint" id="reset-step1-text" style="margin-top:0;">メールアドレスを入力して、確認コードを送ってください。</p>
+        <label for="reset-email">メールアドレス</label>
+        <input id="reset-email" type="email" placeholder="登録時に入力したメールアドレス">
         <button class="btn ghost" id="reset-send-btn">確認コードを送信する</button>
         <div id="reset-step2" style="display:none;">
           <label for="reset-code">確認コード(メールに記載)</label>
@@ -467,7 +469,7 @@ function showGate() {
 function showApp() {
   document.getElementById('gate-wrap').style.display = 'none';
   document.getElementById('app-wrap').style.display = 'block';
-  document.getElementById('auth-indicator').textContent = 'ログイン中 ・ No.' + auth.number;
+  document.getElementById('auth-indicator').textContent = 'No.' + auth.number;
   renderAppData();
 }
 
@@ -535,7 +537,7 @@ document.getElementById('register-btn').addEventListener('click', async () => {
       await loadData();
       showApp();
       document.getElementById('earn-status').innerHTML =
-        '<div class="success-pill">' + successIcon() + '<span>登録が完了しました。あなたの会員番号は No.' + res.number + ' です。忘れないよう控えてください。</span></div>';
+        '<div class="success-pill">' + successIcon() + '<span>登録が完了しました。ようこそ!</span></div>';
     } else if (res.error === 'password_weak') {
       statusEl.innerHTML = '<p class="hint error">パスワードは英字と数字を両方含む6文字以上にしてください。</p>';
     } else if (res.error === 'email_taken') {
@@ -636,12 +638,14 @@ document.getElementById('login-forgot-link').addEventListener('click', () => {
   document.getElementById('reset-box').style.display = 'block';
   document.getElementById('reset-step2').style.display = 'none';
   document.getElementById('reset-hint').textContent = '';
+  const typedEmail = document.getElementById('login-email').value.trim();
+  if (typedEmail) document.getElementById('reset-email').value = typedEmail;
 });
 document.getElementById('reset-cancel-btn').addEventListener('click', () => {
   document.getElementById('reset-box').style.display = 'none';
 });
 document.getElementById('reset-send-btn').addEventListener('click', async () => {
-  const email = document.getElementById('login-email').value.trim();
+  const email = document.getElementById('reset-email').value.trim();
   const hintEl = document.getElementById('reset-hint');
   if (!email) { hintEl.textContent = 'メールアドレスを入力してください。'; return; }
   const btn = document.getElementById('reset-send-btn');
@@ -661,7 +665,7 @@ document.getElementById('reset-send-btn').addEventListener('click', async () => 
   }
 });
 document.getElementById('reset-confirm-btn').addEventListener('click', async () => {
-  const email = document.getElementById('login-email').value.trim();
+  const email = document.getElementById('reset-email').value.trim();
   const code = document.getElementById('reset-code').value.trim();
   const newPw = document.getElementById('reset-newpw').value;
   const newPw2 = document.getElementById('reset-newpw2').value;
@@ -675,6 +679,7 @@ document.getElementById('reset-confirm-btn').addEventListener('click', async () 
   try {
     const res = await apiPost({ action: 'confirmReset', target: 'member', email, code, newPassword: newPw });
     if (res.ok) {
+      document.getElementById('login-email').value = email;
       document.getElementById('login-password').value = newPw;
       document.getElementById('reset-box').style.display = 'none';
       document.getElementById('reset-code').value = '';
