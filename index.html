@@ -5,271 +5,262 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>操山町内会ポイント帳(住民用)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.js"></script>
 <style>
   :root {
-    --paper: #F7F1E3;
-    --paper-deep: #ECE0C4;
-    --paper-line: #E1D2AC;
-    --ink: #22201B;
-    --ink-soft: #8A7B62;
-    --ink-faint: #B6A98A;
-    --seal: #99392A;
-    --seal-deep: #782A1F;
-    --moss: #4F6B47;
-    --moss-deep: #3C5236;
-    --brass: #A9803C;
-    --brass-soft: #C9A968;
-    --cover: #201C17;
-    --shadow: rgba(34, 24, 12, 0.16);
+    --mint: #AFDCC9; --mint-deep: #8FC7AE; --mint-line: #7FB99E; --mint-pale: #DCEFE4; --mint-mid: #B7E0CD;
+    --sky: #F8F2E2;
+    --ink: #15140F; --ink-soft: #6E6D64; --ink-faint: #A9A79A;
+    --paper: #FFFFFF; --paper-deep: #F3F2ED; --line: #E4E1D6;
+    --plus: #1E6E4F; --plus-bg: #E4F3EA;
+    --minus: #C1502E; --minus-bg: #FBEAE2;
+    --pending: #B27A22; --pending-bg: #FBF1DD;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; }
-  body {
-    background-color: var(--paper);
-    background-image:
-      radial-gradient(ellipse 60% 40% at 12% 0%, rgba(169,128,60,0.07), transparent 60%),
-      repeating-linear-gradient(115deg, rgba(34,24,12,0.014) 0px, rgba(34,24,12,0.014) 1px, transparent 1px, transparent 4px);
-    color: var(--ink);
-    font-family: 'Zen Kaku Gothic New', sans-serif;
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
-    overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
-  }
+  body { background: var(--paper-deep); color: var(--ink); font-family: 'Zen Kaku Gothic New', sans-serif;
+    padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); overflow-x: hidden; }
 
-  header {
-    position: relative;
-    padding: 38px 20px 26px;
-    background: var(--cover);
-    background-image: repeating-linear-gradient(48deg, rgba(255,255,255,0.025) 0 2px, transparent 2px 6px);
-    text-align: center;
-    overflow: hidden;
-  }
-  header::before {
-    content: "";
-    position: absolute; top: 9px; left: 22px; right: 22px; height: 1px;
-    background: linear-gradient(90deg, transparent, var(--brass-soft) 20%, var(--brass-soft) 80%, transparent);
-    opacity: 0.5;
-  }
-  header h1 {
-    font-family: 'Shippori Mincho', serif; font-weight: 700; font-size: 1.34rem;
-    color: var(--paper); margin: 0 0 8px; letter-spacing: 0.16em;
-  }
-  header p { margin: 0; color: rgba(247,241,227,0.5); font-size: 0.72rem; letter-spacing: 0.03em; }
-  .hanko { margin: 17px auto 0; width: 34px; height: 34px; opacity: 0.92; transform: rotate(-6deg);
-    filter: drop-shadow(0 1px 1px rgba(0,0,0,0.35)); }
-  .hanko svg { width: 100%; height: 100%; display: block; }
+  header { position: relative; padding-top: 38px; background: var(--sky); overflow: hidden; text-align: center; }
+  .eyebrow { font-family: 'Zen Old Mincho', serif; font-size: 1.2rem; font-weight: 700; color: var(--ink); letter-spacing: 0.03em; margin: 0 0 2px; padding: 0 22px; }
+  header h1 { font-family: 'Zen Old Mincho', serif; font-weight: 900; font-size: 2.3rem; color: var(--ink); margin: 0 0 8px; letter-spacing: 0.01em; line-height: 1.15; padding: 0 22px; }
+  header .tagline { margin: 0 0 20px; color: #3F6E56; font-size: 0.8rem; letter-spacing: 0.01em; padding: 0 22px; }
+  .mountain-band { width: 100%; aspect-ratio: 800 / 230; display: block; line-height: 0; }
+  .mountain-band svg { width: 100%; height: 100%; display: block; }
 
-  #logout-btn { position: absolute; right: 16px; top: 27px; font-size: 0.68rem; padding: 7px 11px;
-    border: 1px solid rgba(247,241,227,0.32); background: transparent; color: var(--paper); border-radius: 3px;
-    cursor: pointer; display: none; font-family: 'Zen Kaku Gothic New', sans-serif; letter-spacing: 0.02em; }
-  #logout-btn:active { background: rgba(247,241,227,0.1); }
+  .auth-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    background: var(--ink); padding: 10px 18px; }
+  .auth-bar span { color: var(--mint); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.02em; }
+  .auth-bar button { background: transparent; border: 1px solid rgba(175,220,201,0.4); color: var(--mint);
+    font-size: 0.7rem; padding: 6px 11px; border-radius: 5px; cursor: pointer; font-family: inherit; }
 
-  nav { display: flex; justify-content: center; padding: 0 8px; border-bottom: 1px solid var(--paper-line);
-    background: var(--paper-deep); flex-wrap: wrap; }
-  nav button { position: relative; font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 700;
-    font-size: 0.79rem; letter-spacing: 0.02em; padding: 14px 14px; border: none; background: transparent;
-    color: var(--ink-soft); cursor: pointer; transition: color 0.15s ease; }
-  nav button::after { content: ""; position: absolute; left: 14px; right: 14px; bottom: -1px; height: 2px;
-    background: var(--seal); transform: scaleX(0); transition: transform 0.2s ease; }
-  nav button.active { color: var(--seal); }
+  nav { display: flex; justify-content: center; padding: 0 8px; border-bottom: 1px solid var(--line);
+    background: var(--paper); flex-wrap: wrap; }
+  nav button { position: relative; font-family: inherit; font-weight: 700; font-size: 0.82rem; letter-spacing: 0.01em;
+    padding: 15px 15px; border: none; background: transparent; color: var(--ink-faint); cursor: pointer; }
+  nav button::after { content: ""; position: absolute; left: 15px; right: 15px; bottom: -1px; height: 3px;
+    background: var(--ink); border-radius: 2px 2px 0 0; transform: scaleX(0); transition: transform 0.18s ease; }
+  nav button.active { color: var(--ink); }
   nav button.active::after { transform: scaleX(1); }
 
-  main { max-width: 640px; margin: 0 auto; padding: 26px 18px 64px; }
+  main { max-width: 640px; margin: 0 auto; padding: 22px 18px 64px; }
+  .section-lead { font-size: 0.8rem; color: var(--ink-soft); margin: 0 0 14px; font-weight: 500; }
   section { display: none; }
   section.active { display: block; }
 
-  .card { position: relative; background: var(--paper); border: 1px solid var(--paper-line);
-    border-radius: 2px 2px 7px 7px; padding: 27px 22px 23px; margin-bottom: 18px;
-    box-shadow: 0 14px 26px -22px var(--shadow); }
-  .card::before { content: ""; position: absolute; top: -1px; left: 14px; right: 14px; height: 5px;
-    background-image: radial-gradient(circle, var(--paper) 2.1px, transparent 2.4px);
-    background-size: 13px 10px; background-position: 6px -5px; background-repeat: repeat-x;
-    background-color: var(--paper-line); }
-  .card h2 { font-family: 'Shippori Mincho', serif; font-weight: 700; font-size: 1.02rem; margin: 5px 0 18px;
-    color: var(--ink); letter-spacing: 0.02em; padding-bottom: 13px; border-bottom: 1px solid var(--paper-line);
-    position: relative; }
-  .card h2::after { content: ""; position: absolute; left: 0; bottom: -1px; width: 30px; height: 1px;
-    background: var(--seal); }
+  .card { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 26px 22px;
+    margin-bottom: 16px; box-shadow: 0 1px 2px rgba(21,20,15,0.04); }
+  .card h2 { font-family: 'Zen Old Mincho', serif; font-weight: 900; font-size: 1.2rem; margin: 0 0 18px; color: var(--ink); letter-spacing: 0.01em; }
 
-  label { display: block; font-size: 0.74rem; color: var(--ink-soft); margin: 13px 0 5px; letter-spacing: 0.01em; }
-  .hint { font-size: 0.72rem; color: var(--ink-soft); margin-top: 7px; line-height: 1.7; }
-  input, select, textarea { width: 100%; padding: 11px 13px; border: 1px solid var(--paper-line); border-radius: 3px;
-    background: #FFFDF8; font-family: inherit; font-size: 0.9rem; color: var(--ink); transition: box-shadow 0.15s ease, border-color 0.15s ease; }
-  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--brass); box-shadow: 0 0 0 3px rgba(169,128,60,0.16); }
-  .readonly-box { width: 100%; padding: 11px 13px; border: 1px solid var(--paper-line); border-radius: 3px;
-    background: var(--paper-deep); font-size: 0.9rem; color: var(--ink); }
+  .balance-card { background: var(--ink); border-radius: 10px; padding: 22px 22px 20px; margin-bottom: 16px;
+    text-align: center; color: var(--paper); }
+  .balance-card .label { font-size: 0.72rem; color: var(--mint); font-weight: 700; letter-spacing: 0.04em; margin: 0 0 4px; }
+  .balance-card .value { font-family: 'Zen Old Mincho', serif; font-weight: 900; font-size: 2.6rem; letter-spacing: 0.01em; line-height: 1.1; }
+  .balance-card .value span { font-size: 1.05rem; font-weight: 700; margin-left: 3px; color: var(--mint); }
 
-  .btn { margin-top: 17px; width: 100%; padding: 13px; border: 1px solid var(--seal); border-radius: 3px;
-    background: linear-gradient(180deg, #A83C2C 0%, var(--seal) 100%); color: var(--paper); font-size: 0.88rem;
-    font-weight: 700; letter-spacing: 0.04em; cursor: pointer; font-family: 'Zen Kaku Gothic New', sans-serif;
-    box-shadow: 0 2px 0 var(--seal-deep); transition: transform 0.08s ease, box-shadow 0.08s ease; }
-  .btn.secondary { background: linear-gradient(180deg, #2C2822 0%, var(--cover) 100%); border-color: var(--cover);
-    box-shadow: 0 2px 0 #100e0b; }
-  .btn.ghost { background: transparent; color: var(--ink-soft); border: 1px solid var(--paper-line); box-shadow: none; }
-  .btn:active { transform: translateY(2px); box-shadow: none; }
-  .btn:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; transform: none; }
-  .link-btn { background: none; border: none; color: var(--seal); font-size: 0.75rem; text-decoration: underline;
-    text-underline-offset: 2px; cursor: pointer; padding: 8px 0; font-family: 'Zen Kaku Gothic New', sans-serif; }
+  label { display: block; font-size: 0.75rem; color: var(--ink-soft); margin: 13px 0 5px; font-weight: 500; }
+  .hint { font-size: 0.74rem; color: var(--ink-soft); margin-top: 7px; line-height: 1.7; }
+  .hint.error { color: var(--minus); }
+  input, select { width: 100%; padding: 11px 13px; border: 1.4px solid var(--line); border-radius: 7px;
+    background: var(--paper); font-family: inherit; font-size: 0.92rem; color: var(--ink); }
+  input:focus, select:focus { outline: none; border-color: var(--ink); }
+  .readonly-box { width: 100%; padding: 11px 13px; border: 1.4px dashed var(--line); border-radius: 7px;
+    background: var(--paper-deep); font-size: 0.92rem; color: var(--ink); font-weight: 700; }
 
-  .banner { background: var(--paper-deep); border: 1px solid var(--moss); color: var(--moss-deep); border-radius: 3px;
-    padding: 12px 14px; font-size: 0.8rem; margin-bottom: 15px; line-height: 1.6; }
-  .banner.warn { border-color: var(--seal); color: var(--seal); }
+  .btn { margin-top: 16px; width: 100%; padding: 14px; border: none; border-radius: 10px;
+    background: var(--ink); color: var(--paper); font-size: 0.9rem; font-weight: 700; letter-spacing: 0.02em;
+    cursor: pointer; font-family: inherit; transition: opacity 0.1s ease; }
+  .btn.mint { background: var(--mint); color: var(--ink); }
+  .btn.ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--line); }
+  .btn:active { opacity: 0.75; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .link-btn { background: none; border: none; color: var(--ink); font-size: 0.78rem; font-weight: 700;
+    text-decoration: underline; text-underline-offset: 3px; cursor: pointer; padding: 8px 0; font-family: inherit; }
 
-  .big-number { font-family: 'Shippori Mincho', serif; font-weight: 700; font-size: 2.2rem; text-align: center;
-    color: var(--seal); margin: 14px 0; letter-spacing: 0.04em; transform: rotate(-1.4deg); }
+  .success-pill { display: flex; align-items: center; gap: 10px; background: var(--plus-bg); color: var(--plus);
+    border-radius: 8px; padding: 13px 15px; font-size: 0.85rem; font-weight: 700; margin-bottom: 15px; line-height: 1.6; }
+  .success-pill svg { flex: none; width: 20px; height: 20px; }
+  .banner { background: var(--paper-deep); border: 1.4px solid var(--line); color: var(--ink); border-radius: 8px;
+    padding: 12px 14px; font-size: 0.82rem; margin-bottom: 15px; line-height: 1.7; }
+  .banner.warn { border-color: var(--minus); background: var(--minus-bg); color: var(--minus); }
 
-  .log-entry, .member-row, .catalog-row, .tmpl-row { display: flex; align-items: center; justify-content: space-between;
-    gap: 10px; padding: 12px 2px; border-bottom: 1px dashed var(--paper-line); font-size: 0.83rem; }
-  .log-entry:last-child, .member-row:last-child, .catalog-row:last-child, .tmpl-row:last-child { border-bottom: none; }
-  .log-sub { color: var(--ink-soft); font-size: 0.72rem; margin-top: 2px; }
-  .log-pt { font-weight: 700; white-space: nowrap; font-family: 'Shippori Mincho', serif; font-variant-numeric: tabular-nums; }
-  .log-pt.earn { color: var(--moss-deep); }
-  .log-pt.redeem { color: var(--seal); }
-  .empty { color: var(--ink-soft); font-size: 0.82rem; text-align: center; padding: 22px 0; }
-  .sub-box { background: var(--paper-deep); border: 1px solid var(--paper-line); border-radius: 3px; padding: 15px; margin-top: 13px; }
-  .catalog-pt, .stamp-num { font-variant-numeric: tabular-nums; }
-  .catalog-pt { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; padding: 4px 9px;
-    border: 1px solid var(--seal); color: var(--seal); border-radius: 3px; font-family: 'Shippori Mincho', serif;
-    font-weight: 700; font-size: 0.76rem; }
-  .stamp-num { display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px;
-    border: 1px solid var(--seal); color: var(--seal); border-radius: 50%; font-family: 'Shippori Mincho', serif;
-    font-weight: 700; font-size: 0.82rem; }
-  .member-points { display: flex; align-items: center; gap: 7px; }
-  .del-btn { background: none; border: none; color: var(--ink-soft); font-size: 0.72rem; cursor: pointer;
-    text-decoration: underline; text-underline-offset: 2px; margin-left: 8px; }
+  .divider { border: none; border-top: 1px solid var(--line); margin: 20px 0; }
+  .sub-heading { font-size: 0.78rem; font-weight: 700; color: var(--ink-soft); margin: 0 0 10px; }
+
+  .scroll-list { max-height: 260px; overflow-y: auto; border: 1.4px solid var(--line); border-radius: 8px; padding: 4px 12px; }
+  .list-entry { display: flex; justify-content: space-between; gap: 10px; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 0.83rem; }
+  .list-entry:last-child { border-bottom: none; }
+  .list-sub { color: var(--ink-soft); font-size: 0.72rem; margin-top: 2px; }
+  .list-pt { font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .list-pt.earn { color: var(--plus); }
+  .list-pt.redeem { color: var(--minus); }
+  .status-tag { font-size: 0.68rem; font-weight: 700; padding: 3px 8px; border-radius: 20px; white-space: nowrap; }
+  .status-tag.pending { background: var(--pending-bg); color: var(--pending); }
+  .status-tag.done { background: var(--plus-bg); color: var(--plus); }
+  .status-tag.rejected { background: var(--minus-bg); color: var(--minus); }
+
+  .empty { color: var(--ink-faint); font-size: 0.82rem; text-align: center; padding: 22px 0; }
+
+  .catalog-item { border: 1.4px solid var(--line); border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
+  .catalog-item-btn { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    background: var(--paper); border: none; padding: 14px 15px; font-family: inherit; font-size: 0.88rem;
+    font-weight: 700; color: var(--ink); cursor: pointer; text-align: left; }
+  .catalog-item-btn .pt-tag { font-size: 0.75rem; font-weight: 700; background: var(--paper-deep); border: 1.4px solid var(--ink);
+    border-radius: 20px; padding: 4px 11px; white-space: nowrap; }
+  .catalog-item-panel { display: none; padding: 4px 15px 16px; background: var(--paper-deep); }
+  .catalog-item-panel.open { display: block; }
+  .catalog-item-panel .hint { margin-top: 0; margin-bottom: 10px; }
 
   #scanner-overlay { display: none; position: fixed; inset: 0; background: #000; z-index: 999; }
   #scanner-overlay video { width: 100%; height: 100%; object-fit: cover; }
   #scanner-close { position: absolute; top: calc(env(safe-area-inset-top) + 14px); right: 14px;
-    background: rgba(247,241,227,0.95); border: none; border-radius: 3px; padding: 10px 16px; font-size: 0.84rem;
-    color: var(--ink); cursor: pointer; font-family: 'Zen Kaku Gothic New', sans-serif; }
+    background: var(--paper); border: none; border-radius: 6px; padding: 10px 16px; font-size: 0.84rem;
+    color: var(--ink); cursor: pointer; font-family: inherit; font-weight: 700; }
   #scanner-frame { position: absolute; top: 50%; left: 50%; width: 62vw; max-width: 280px; aspect-ratio: 1/1;
-    transform: translate(-50%, -50%); box-shadow: 0 0 0 999px rgba(0,0,0,0.45); }
-  #scanner-frame .corner { position: absolute; width: 26px; height: 26px; border: 2px solid var(--brass-soft); opacity: 0.9; }
+    transform: translate(-50%, -50%); box-shadow: 0 0 0 999px rgba(0,0,0,0.5); }
+  #scanner-frame .corner { position: absolute; width: 26px; height: 26px; border: 3px solid var(--mint); }
   #scanner-frame .corner.tl { top: -2px; left: -2px; border-right: none; border-bottom: none; }
   #scanner-frame .corner.tr { top: -2px; right: -2px; border-left: none; border-bottom: none; }
   #scanner-frame .corner.bl { bottom: -2px; left: -2px; border-right: none; border-top: none; }
   #scanner-frame .corner.br { bottom: -2px; right: -2px; border-left: none; border-top: none; }
   #scanner-hint { position: absolute; bottom: calc(env(safe-area-inset-bottom) + 26px); left: 0; right: 0;
-    text-align: center; color: var(--paper); font-size: 0.8rem; letter-spacing: 0.02em; }
+    text-align: center; color: #fff; font-size: 0.82rem; }
 
-  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
-
 </style>
 </head>
 <body>
 
 <header>
-  <h1>操山町内会ポイント帳</h1>
-  <p>活動に参加してポイントを貯めよう</p>
-
-  <div class="hanko" aria-hidden="true">
-    <svg viewBox="0 0 64 64">
-      <defs>
-        <filter id="hankoR" x="-20%" y="-20%" width="140%" height="140%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="n" seed="7"/>
-          <feDisplacementMap in="SourceGraphic" in2="n" scale="3.2"/>
-        </filter>
-      </defs>
-      <g filter="url(#hankoR)">
-        <circle cx="32" cy="32" r="27" fill="none" stroke="#c9503c" stroke-width="2.6"/>
-        <circle cx="32" cy="32" r="20" fill="none" stroke="#c9503c" stroke-width="1.1"/>
-        <text x="32" y="39" text-anchor="middle" font-family="'Shippori Mincho', serif" font-size="17" fill="#c9503c">印</text>
-      </g>
+  <p class="eyebrow">操山町内会</p>
+  <h1>ポイント帳</h1>
+  <p class="tagline">活動に参加してポイントを貯めよう</p>
+  <div class="mountain-band" aria-hidden="true">
+    <svg viewBox="0 0 800 230" preserveAspectRatio="none">
+      <path d="M0,150 C60,110 110,130 150,95 C190,60 230,90 270,60 C310,30 350,70 400,50 C450,30 500,80 560,55 C620,30 660,70 710,55 C750,45 780,65 800,60 L800,230 L0,230 Z" fill="#DCEFE4"/>
+      <path d="M0,180 C70,140 130,160 180,125 C230,90 260,130 320,100 C380,70 420,120 480,95 C540,70 580,110 640,90 C690,75 740,100 800,90 L800,230 L0,230 Z" fill="#B7E0CD"/>
+      <path d="M0,205 C80,165 150,190 210,155 C270,120 310,160 380,135 C450,110 500,150 570,130 C630,115 680,140 800,120 L800,230 L0,230 Z" fill="#8FC7AE"/>
+      <path d="M0,225 C90,190 170,210 230,180 C300,150 350,185 420,165 C490,145 540,180 620,160 C690,145 740,170 800,155 L800,230 L0,230 Z" fill="#15140F"/>
     </svg>
   </div>
 </header>
 
-<nav>
-  <button data-tab="register" class="active">はじめて登録</button>
-  <button data-tab="earn">活動記録</button>
-  <button data-tab="history">履歴</button>
-</nav>
-
-<main>
-
-  <section id="register" class="active">
+<div id="gate-wrap">
+  <main>
+    <p class="section-lead">はじめての方も、登録済みの方もこちらから</p>
     <div class="card">
-      <h2>会員登録</h2>
+      <h2>すでに登録した方</h2>
+      <div id="login-status"></div>
+      <label for="login-email">メールアドレス</label>
+      <input id="login-email" type="email" placeholder="登録時に入力したメールアドレス">
+      <label for="login-password">パスワード</label>
+      <input id="login-password" type="password" placeholder="登録時に決めたパスワード">
+      <button class="btn" id="login-btn">ログインする</button>
+      <button type="button" class="link-btn" id="login-forgot-link">パスワードを忘れた場合はこちら</button>
+
+      <div id="reset-box" class="banner" style="display:none;margin-top:14px;">
+        <p class="hint" id="reset-step1-text" style="margin-top:0;">上で入力したメールアドレスへ確認コードを送ります。</p>
+        <button class="btn ghost" id="reset-send-btn">確認コードを送信する</button>
+        <div id="reset-step2" style="display:none;">
+          <label for="reset-code">確認コード(メールに記載)</label>
+          <input id="reset-code" placeholder="6桁のコード">
+          <label for="reset-newpw">新しいパスワード</label>
+          <input id="reset-newpw" type="password" placeholder="英字+数字を含む6文字以上">
+          <label for="reset-newpw2">新しいパスワード(確認)</label>
+          <input id="reset-newpw2" type="password" placeholder="もう一度入力">
+          <button class="btn ghost" id="reset-confirm-btn">パスワードを再設定する</button>
+        </div>
+        <p class="hint" id="reset-hint"></p>
+        <button type="button" class="link-btn" id="reset-cancel-btn">やめる</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>はじめての方 - 会員登録</h2>
       <div id="register-status"></div>
       <label for="reg-name">お名前</label>
       <input id="reg-name" placeholder="例:山田 太郎">
       <label for="reg-email">メールアドレス</label>
       <input id="reg-email" type="email" placeholder="パスワードを忘れた時の再設定に使います">
       <label for="reg-password">パスワード</label>
-      <input id="reg-password" type="password" placeholder="活動記録の際に使うパスワード">
+      <input id="reg-password" type="password" placeholder="英字+数字を含む6文字以上">
       <label for="reg-password2">パスワード(確認)</label>
       <input id="reg-password2" type="password" placeholder="もう一度入力">
-      <p class="hint">登録すると会員番号が発行されます。パスワードは、活動を記録するときに「本人確認」として使います。お名前・メールアドレスは係の人が管理する記録簿にのみ保存されます。</p>
-      <button class="btn secondary" id="register-btn">登録する</button>
-      <div id="register-result" style="display:none;">
-        <p class="hint" style="text-align:center;margin-top:16px;">あなたの会員番号</p>
-        <div class="big-number" id="assigned-number"></div>
-        <p class="hint" style="text-align:center;">この番号とパスワードを忘れないよう控えてください。</p>
-      </div>
+      <p class="hint">お名前・メールアドレスは係の人が管理する記録簿にのみ保存されます。パスワードは活動を記録するときに「本人確認」として毎回使います。</p>
+      <button class="btn mint" id="register-btn">登録する</button>
     </div>
-  </section>
+  </main>
+</div>
 
-  <section id="earn">
-    <div class="card">
-      <h2>活動を記録してポイント付与</h2>
-      <div id="earn-status"></div>
+<div id="app-wrap" style="display:none;">
+  <div class="auth-bar">
+    <span id="auth-indicator">ログイン中</span>
+    <button id="logout-btn">ログアウト</button>
+  </div>
 
-      <div id="earn-noqr">
-        <p class="hint">活動会場に掲示されているQRコードを読み取ると、ポイントを記録できます。</p>
-        <button class="btn secondary" id="scan-btn">QRコードをスキャンする</button>
-      </div>
+  <nav>
+    <button data-tab="earn" class="active">活動記録</button>
+    <button data-tab="catalog">交換リスト</button>
+    <button data-tab="history">ポイント履歴</button>
+  </nav>
 
-      <div id="earn-withqr" style="display:none;">
-        <label>活動内容</label>
-        <div class="readonly-box" id="earn-label-display"></div>
-        <label>付与ポイント</label>
-        <div class="readonly-box" id="earn-points-display"></div>
-        <label for="earn-number">あなたの会員番号</label>
-        <select id="earn-number"></select>
-        <label for="earn-password">パスワード</label>
-        <input id="earn-password" type="password" placeholder="登録時に決めたパスワード">
-        <button type="button" class="link-btn" id="forgot-link">パスワードを忘れた場合はこちら</button>
-        <label for="earn-date">日付</label>
-        <input id="earn-date" type="date">
-        <button class="btn" id="add-earn-btn">ポイントを記録する</button>
-      </div>
+  <main>
+    <section id="earn" class="active">
+      <div class="balance-card"><p class="label">現在のポイント残高</p><div class="value" id="balance-earn">0<span>pt</span></div></div>
 
-      <div id="reset-box" class="sub-box" style="display:none;">
-        <p class="hint" id="reset-step1-text">上で選んだ会員番号のメールアドレスへ確認コードを送ります。</p>
-        <button class="btn secondary" id="reset-send-btn">確認コードを送信する</button>
+      <div class="card">
+        <h2>活動を記録してポイント付与</h2>
+        <div id="earn-status"></div>
 
-        <div id="reset-step2" style="display:none;">
-          <label for="reset-code">確認コード(メールに記載)</label>
-          <input id="reset-code" placeholder="6桁のコード">
-          <label for="reset-newpw">新しいパスワード</label>
-          <input id="reset-newpw" type="password" placeholder="新しいパスワード">
-          <label for="reset-newpw2">新しいパスワード(確認)</label>
-          <input id="reset-newpw2" type="password" placeholder="もう一度入力">
-          <button class="btn secondary" id="reset-confirm-btn">パスワードを再設定する</button>
+        <div id="earn-noqr">
+          <p class="hint" style="margin-top:0;">活動会場に掲示されているQRコードを読み取ると、ポイントを記録できます。</p>
+          <button class="btn" id="scan-btn">QRコードをスキャンする</button>
         </div>
-        <p class="hint" id="reset-hint"></p>
-        <button type="button" class="link-btn" id="reset-cancel-btn">やめる</button>
+
+        <div id="earn-withqr" style="display:none;">
+          <label>活動内容</label>
+          <div class="readonly-box" id="earn-label-display"></div>
+          <label>付与ポイント</label>
+          <div class="readonly-box" id="earn-points-display"></div>
+          <label for="earn-password">パスワード(本人確認)</label>
+          <input id="earn-password" type="password" placeholder="登録時に決めたパスワード">
+          <label for="earn-date">日付</label>
+          <input id="earn-date" type="date">
+          <button class="btn mint" id="add-earn-btn">ポイントを記録する</button>
+          <button type="button" class="link-btn" id="earn-cancel-btn">やめる</button>
+        </div>
       </div>
-    </div>
-  </section>
 
-  <section id="history">
-    <div class="card">
-      <h2>ポイント交換リスト</h2>
-      <div id="catalog-list"><div class="empty">まだ交換できる景品はありません</div></div>
-    </div>
-    <div class="card">
-      <h2>記録履歴</h2>
-      <div id="log-list"><div class="empty">まだ記録がありません</div></div>
-    </div>
-  </section>
+      <div class="card">
+        <p class="sub-heading">これまでの活動記録</p>
+        <div id="recent-earn-list" class="scroll-list"><div class="empty">まだ記録がありません</div></div>
+      </div>
+    </section>
 
-</main>
+    <section id="catalog">
+      <div class="balance-card"><p class="label">現在のポイント残高</p><div class="value" id="balance-catalog">0<span>pt</span></div></div>
+      <div class="card">
+        <h2>ポイント交換リスト</h2>
+        <p class="hint" style="margin-top:-6px;margin-bottom:14px;">景品をタップすると交換を申請できます。</p>
+        <div id="catalog-list"><div class="empty">まだ交換できる景品はありません</div></div>
+      </div>
+      <div class="card">
+        <p class="sub-heading">あなたの申請状況</p>
+        <div id="my-requests-list" class="scroll-list"><div class="empty">申請はまだありません</div></div>
+      </div>
+    </section>
+
+    <section id="history">
+      <div class="balance-card"><p class="label">現在のポイント残高</p><div class="value" id="balance-history">0<span>pt</span></div></div>
+      <div class="card">
+        <h2>ポイント履歴</h2>
+        <div id="log-list"><div class="empty">まだ記録がありません</div></div>
+      </div>
+    </section>
+  </main>
+</div>
 
 <div id="scanner-overlay">
   <video id="qr-video" autoplay muted playsinline></video>
@@ -283,21 +274,28 @@
 
 <script>
 // ここに、GASの「ウェブアプリのURL」を貼り付けてください
-const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzFM65bEL3PBsfU8ZUgqL5v9lfUwZ8BNcdsS0yszfSs-3nf8o5jpHJ_Z7TB9gC6rcY6/exec';
+const WEB_APP_URL = 'PUT_YOUR_WEB_APP_URL_HERE';
+const AUTH_KEY = 'townPointAuth';
 
 let members = [];
 let log = [];
 let catalog = [];
-let qrActivity = null;
-let qrPoints = null;
-let lastRegisteredNumber = null;
+let redemptions = [];
+let pendingToken = null;
 let videoStream = null;
+let auth = null; // { number, password }
 
 function todayStr() { return new Date().toISOString().slice(0, 10); }
 function escapeHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+function isValidPassword(pw) { return /^(?=.*[A-Za-z])(?=.*[0-9]).{6,}$/.test(pw || ''); }
 
-async function apiGet() {
-  const res = await fetch(WEB_APP_URL);
+function successIcon() {
+  return '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" stroke="currentColor" stroke-width="2"/><path d="M7 12.5l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+}
+
+async function apiGet(token) {
+  const url = WEB_APP_URL + (token ? ('?token=' + encodeURIComponent(token)) : '');
+  const res = await fetch(url);
   return res.json();
 }
 async function apiPost(payload) {
@@ -309,168 +307,324 @@ async function apiPost(payload) {
   return res.json();
 }
 
+function loadAuth() {
+  try {
+    const raw = localStorage.getItem(AUTH_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) { return null; }
+}
+function saveAuth(a) { auth = a; localStorage.setItem(AUTH_KEY, JSON.stringify(a)); }
+function clearAuth() { auth = null; localStorage.removeItem(AUTH_KEY); }
+
+function balanceFor(number) {
+  return log.reduce((sum, e) => {
+    if (Number(e.number) !== Number(number)) return sum;
+    return sum + (e.type === 'earn' ? Number(e.points) : -Number(e.points));
+  }, 0);
+}
+function pendingPointsFor(number) {
+  return redemptions.reduce((sum, r) => {
+    if (Number(r.number) !== Number(number) || r.status !== 'pending') return sum;
+    return sum + Number(r.points);
+  }, 0);
+}
+
 async function loadData() {
-  const statusEl = document.getElementById('register-status');
   try {
     const data = await apiGet();
     members = data.members || [];
     log = data.log || [];
     catalog = data.catalog || [];
-    statusEl.innerHTML = '';
-    document.getElementById('register-btn').disabled = false;
+    redemptions = data.redemptions || [];
+    if (auth) renderAppData();
   } catch (e) {
-    statusEl.innerHTML = '<div class="banner warn">通信に失敗しました。ページ内の設定(WEB_APP_URL)が正しいか、係の人にご確認ください。</div>';
-    document.getElementById('register-btn').disabled = true;
+    document.getElementById('register-status').innerHTML = '<div class="banner warn">通信に失敗しました。WEB_APP_URLの設定をご確認ください。</div>';
   }
-  render();
 }
 
-function pointsFor(number) {
-  return log.reduce((sum, e) => sum + (Number(e.number) === Number(number) ? (e.type === 'earn' ? Number(e.points) : -Number(e.points)) : 0), 0);
-}
-
-function render() {
-  renderNumberSelect();
-  renderLog();
+function renderAppData() {
+  const bal = balanceFor(auth.number);
+  ['balance-earn', 'balance-catalog', 'balance-history'].forEach(id => {
+    document.getElementById(id).innerHTML = bal + '<span>pt</span>';
+  });
+  renderRecentEarns();
   renderCatalog();
+  renderMyRequests();
+  renderLog();
+}
+
+function renderRecentEarns() {
+  const el = document.getElementById('recent-earn-list');
+  const mine = log.filter(l => Number(l.number) === Number(auth.number) && l.type === 'earn')
+    .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  if (mine.length === 0) { el.innerHTML = '<div class="empty">まだ記録がありません</div>'; return; }
+  el.innerHTML = mine.map(e => `
+    <div class="list-entry">
+      <span><div>${escapeHtml(e.label)}</div><div class="list-sub">${e.date || ''}</div></span>
+      <span class="list-pt earn">+${e.points}pt</span>
+    </div>`).join('');
 }
 
 function renderCatalog() {
   const el = document.getElementById('catalog-list');
   if (catalog.length === 0) { el.innerHTML = '<div class="empty">まだ交換できる景品はありません</div>'; return; }
-  const sorted = [...catalog].sort((a, b) => Number(a.points) - Number(b.points));
-  el.innerHTML = sorted.map(c => `
-    <div class="catalog-row">
-      <span class="catalog-pt">${c.points}pt</span>
-      <span>${escapeHtml(c.label)}</span>
+  const bal = balanceFor(auth.number) - pendingPointsFor(auth.number);
+  el.innerHTML = catalog.map(c => `
+    <div class="catalog-item" data-id="${c.id}">
+      <button class="catalog-item-btn" data-toggle="${c.id}">
+        <span>${escapeHtml(c.label)}</span>
+        <span class="pt-tag">${c.points}pt</span>
+      </button>
+      <div class="catalog-item-panel" id="panel-${c.id}">
+        <p class="hint">現在の残高(申請中を除く):${bal}pt</p>
+        ${bal >= Number(c.points)
+          ? `<label for="redeem-pw-${c.id}">パスワード(本人確認)</label>
+             <input type="password" id="redeem-pw-${c.id}" placeholder="登録時に決めたパスワード">
+             <button class="btn mint" data-request="${c.id}" style="margin-top:12px;">交換を申請する</button>`
+          : `<p class="hint error" style="margin-top:0;">ポイントが足りていません。</p>`}
+        <div id="redeem-status-${c.id}"></div>
+      </div>
     </div>`).join('');
+
+  el.querySelectorAll('[data-toggle]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.toggle;
+      document.querySelectorAll('.catalog-item-panel').forEach(p => { if (p.id !== 'panel-' + id) p.classList.remove('open'); });
+      document.getElementById('panel-' + id).classList.toggle('open');
+    });
+  });
+  el.querySelectorAll('[data-request]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.dataset.request;
+      const pwEl = document.getElementById('redeem-pw-' + id);
+      const statusEl = document.getElementById('redeem-status-' + id);
+      if (!pwEl.value) { statusEl.innerHTML = '<p class="hint error">パスワードを入力してください。</p>'; return; }
+      btn.disabled = true;
+      try {
+        const res = await apiPost({ action: 'requestRedeem', number: auth.number, memberPassword: pwEl.value, catalogId: id });
+        if (res.ok) {
+          statusEl.innerHTML = '<div class="success-pill">' + successIcon() + '<span>交換を申請しました。管理者の対応をお待ちください。</span></div>';
+          await loadData();
+        } else if (res.error === 'insufficient_points') {
+          statusEl.innerHTML = '<p class="hint error">ポイントが足りていません。</p>';
+        } else if (res.error === 'member_password') {
+          statusEl.innerHTML = '<p class="hint error">パスワードが違います。</p>';
+        } else {
+          statusEl.innerHTML = '<p class="hint error">申請に失敗しました。</p>';
+        }
+      } catch (e) {
+        statusEl.innerHTML = '<p class="hint error">通信に失敗しました。</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  });
 }
 
-function renderNumberSelect() {
-  const sel = document.getElementById('earn-number');
-  const opts = members.length
-    ? members.map(m => `<option value="${m.number}">No.${m.number}(${pointsFor(m.number)}pt)</option>`).join('')
-    : '<option value="">まだ会員がいません</option>';
-  sel.innerHTML = opts;
-  if (lastRegisteredNumber && members.some(m => Number(m.number) === lastRegisteredNumber)) {
-    sel.value = String(lastRegisteredNumber);
-  }
+function renderMyRequests() {
+  const el = document.getElementById('my-requests-list');
+  const mine = redemptions.filter(r => Number(r.number) === Number(auth.number))
+    .sort((a, b) => (b.requestedAt || '').localeCompare(a.requestedAt || ''));
+  if (mine.length === 0) { el.innerHTML = '<div class="empty">申請はまだありません</div>'; return; }
+  const statusLabel = { pending: '確認中', done: '受け取り済み', rejected: '却下' };
+  el.innerHTML = mine.map(r => `
+    <div class="list-entry">
+      <span><div>${escapeHtml(r.label)}</div><div class="list-sub">${(r.requestedAt || '').slice(0, 10)}</div></span>
+      <span style="display:flex;align-items:center;gap:8px;">
+        <span class="list-pt">${r.points}pt</span>
+        <span class="status-tag ${r.status}">${statusLabel[r.status] || r.status}</span>
+      </span>
+    </div>`).join('');
 }
 
 function renderLog() {
   const el = document.getElementById('log-list');
-  if (log.length === 0) { el.innerHTML = '<div class="empty">まだ記録がありません</div>'; return; }
-  const sorted = [...log].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-  el.innerHTML = sorted.map(e => {
+  const mine = log.filter(l => Number(l.number) === Number(auth.number))
+    .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  if (mine.length === 0) { el.innerHTML = '<div class="empty">まだ記録がありません</div>'; return; }
+  el.innerHTML = mine.map(e => {
     const sign = e.type === 'earn' ? '+' : '−';
-    return `<div class="log-entry">
-      <span><div>No.${e.number} — ${escapeHtml(e.label)}</div><div class="log-sub">${e.date || ''}</div></span>
-      <span class="log-pt ${e.type}">${sign}${e.points}pt</span>
+    return `<div class="list-entry">
+      <span><div>${escapeHtml(e.label)}</div><div class="list-sub">${e.date || ''}</div></span>
+      <span class="list-pt ${e.type}">${sign}${e.points}pt</span>
     </div>`;
   }).join('');
 }
 
+// ---- ログイン状態の切り替え ----
+function showGate() {
+  document.getElementById('gate-wrap').style.display = 'block';
+  document.getElementById('app-wrap').style.display = 'none';
+}
+function showApp() {
+  document.getElementById('gate-wrap').style.display = 'none';
+  document.getElementById('app-wrap').style.display = 'block';
+  document.getElementById('auth-indicator').textContent = 'ログイン中 ・ No.' + auth.number;
+  renderAppData();
+}
+
+async function tryAutoLogin() {
+  const stored = loadAuth();
+  if (!stored) { showGate(); return; }
+  try {
+    const res = await apiPost({ action: 'login', email: stored.email, password: stored.password });
+    if (res.ok) { auth = { email: stored.email, password: stored.password, number: res.number }; showApp(); }
+    else { clearAuth(); showGate(); }
+  } catch (e) {
+    // 通信に失敗した場合は、いったんログイン済み扱いで表示だけしておく
+    auth = stored; showApp();
+  }
+}
+
+document.getElementById('login-btn').addEventListener('click', async () => {
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const statusEl = document.getElementById('login-status');
+  if (!email) { statusEl.innerHTML = '<p class="hint error">メールアドレスを入力してください。</p>'; return; }
+  if (!password) { statusEl.innerHTML = '<p class="hint error">パスワードを入力してください。</p>'; return; }
+  const btn = document.getElementById('login-btn');
+  btn.disabled = true;
+  try {
+    const res = await apiPost({ action: 'login', email, password });
+    if (res.ok) {
+      saveAuth({ email, password, number: res.number });
+      statusEl.innerHTML = '';
+      await loadData();
+      showApp();
+    } else {
+      statusEl.innerHTML = '<p class="hint error">メールアドレスまたはパスワードが違います。</p>';
+    }
+  } catch (e) {
+    statusEl.innerHTML = '<p class="hint error">通信に失敗しました。</p>';
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+document.getElementById('logout-btn').addEventListener('click', () => {
+  clearAuth();
+  showGate();
+});
+
+// ---- 会員登録 ----
 document.getElementById('register-btn').addEventListener('click', async () => {
-  const nameInput = document.getElementById('reg-name');
-  const emailInput = document.getElementById('reg-email');
-  const pwInput = document.getElementById('reg-password');
-  const pw2Input = document.getElementById('reg-password2');
-  const name = nameInput.value.trim();
-  const email = emailInput.value.trim();
-  const password = pwInput.value;
-  const password2 = pw2Input.value;
-  if (!name) { alert('お名前を入力してください。'); return; }
-  if (!email) { alert('メールアドレスを入力してください。'); return; }
-  if (!password) { alert('パスワードを入力してください。'); return; }
-  if (password !== password2) { alert('パスワードが一致しません。'); return; }
+  const name = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const p1 = document.getElementById('reg-password').value;
+  const p2 = document.getElementById('reg-password2').value;
+  const statusEl = document.getElementById('register-status');
+  if (!name) { statusEl.innerHTML = '<p class="hint error">お名前を入力してください。</p>'; return; }
+  if (!email) { statusEl.innerHTML = '<p class="hint error">メールアドレスを入力してください。</p>'; return; }
+  if (!isValidPassword(p1)) { statusEl.innerHTML = '<p class="hint error">パスワードは英字と数字を両方含む6文字以上にしてください。</p>'; return; }
+  if (p1 !== p2) { statusEl.innerHTML = '<p class="hint error">パスワードが一致しません。</p>'; return; }
   const btn = document.getElementById('register-btn');
   btn.disabled = true;
   try {
-    const res = await apiPost({ action: 'register', name, email, password });
-    if (!res.ok) { alert('登録に失敗しました。'); return; }
-    nameInput.value = ''; emailInput.value = ''; pwInput.value = ''; pw2Input.value = '';
-    document.getElementById('assigned-number').textContent = 'No.' + res.number;
-    document.getElementById('register-result').style.display = 'block';
-    lastRegisteredNumber = res.number;
-    await loadData();
-    switchTab('earn');
-    document.getElementById('earn-status').innerHTML =
-      `<div class="banner">登録が完了しました(No.${res.number})。次はQRコードを読み取ってポイントを記録しましょう。</div>`;
+    const res = await apiPost({ action: 'register', name, email, password: p1 });
+    if (res.ok) {
+      saveAuth({ email, password: p1, number: res.number });
+      statusEl.innerHTML = '';
+      await loadData();
+      showApp();
+      document.getElementById('earn-status').innerHTML =
+        '<div class="success-pill">' + successIcon() + '<span>登録が完了しました。あなたの会員番号は No.' + res.number + ' です。忘れないよう控えてください。</span></div>';
+    } else if (res.error === 'password_weak') {
+      statusEl.innerHTML = '<p class="hint error">パスワードは英字と数字を両方含む6文字以上にしてください。</p>';
+    } else if (res.error === 'email_taken') {
+      statusEl.innerHTML = '<p class="hint error">このメールアドレスはすでに登録されています。ログインをお試しください。</p>';
+    } else {
+      statusEl.innerHTML = '<p class="hint error">登録に失敗しました。</p>';
+    }
   } catch (e) {
-    alert('通信に失敗しました。時間をおいて再度お試しください。');
+    statusEl.innerHTML = '<p class="hint error">通信に失敗しました。</p>';
   } finally {
     btn.disabled = false;
   }
 });
 
-// Tabs
-document.querySelectorAll('nav button[data-tab]').forEach(btn => {
-  btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+// ---- 活動記録(QR) ----
+document.getElementById('earn-cancel-btn').addEventListener('click', () => {
+  pendingToken = null;
+  document.getElementById('earn-withqr').style.display = 'none';
+  document.getElementById('earn-noqr').style.display = 'block';
+  document.getElementById('earn-status').innerHTML = '';
 });
-function switchTab(tab) {
-  document.querySelectorAll('nav button[data-tab]').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
-  document.querySelectorAll('main section').forEach(s => s.classList.toggle('active', s.id === tab));
-}
 
-// ---- Earn ----
 document.getElementById('earn-date').value = todayStr();
 document.getElementById('add-earn-btn').addEventListener('click', async () => {
-  const number = parseInt(document.getElementById('earn-number').value, 10);
-  const memberPassword = document.getElementById('earn-password').value;
+  const password = document.getElementById('earn-password').value;
   const date = document.getElementById('earn-date').value || todayStr();
-  if (!number) { alert('会員番号を選んでください。'); return; }
-  if (!memberPassword) { alert('パスワードを入力してください。'); return; }
-  if (!qrActivity || !qrPoints) { alert('QRコードを読み取ってからお試しください。'); return; }
+  const statusEl = document.getElementById('earn-status');
+  if (!pendingToken) { statusEl.innerHTML = '<div class="banner warn">QRコードを読み取り直してください。</div>'; return; }
+  if (!password) { statusEl.innerHTML = '<div class="banner warn">パスワードを入力してください。</div>'; return; }
   const btn = document.getElementById('add-earn-btn');
   btn.disabled = true;
   try {
-    const res = await apiPost({ action: 'addEarn', number, memberPassword, label: qrActivity, points: qrPoints, date });
-    if (!res.ok) {
-      if (res.error === 'member_password') alert('パスワードが違います。');
-      else if (res.error === 'member_not_found') alert('会員番号が見つかりません。');
-      else alert('記録に失敗しました。');
-      return;
+    const res = await apiPost({ action: 'addEarn', number: auth.number, memberPassword: password, token: pendingToken, date });
+    if (res.ok) {
+      pendingToken = null;
+      document.getElementById('earn-password').value = '';
+      document.getElementById('earn-withqr').style.display = 'none';
+      document.getElementById('earn-noqr').style.display = 'block';
+      statusEl.innerHTML = '<div class="success-pill">' + successIcon() + '<span>記録しました。ありがとうございました!</span></div>';
+      await loadData();
+    } else if (res.error === 'member_password') {
+      statusEl.innerHTML = '<div class="banner warn">パスワードが違います。</div>';
+    } else if (res.error === 'token_invalid') {
+      statusEl.innerHTML = '<div class="banner warn">このQRコードは無効です(有効期限切れの可能性があります)。もう一度スキャンし直してください。</div>';
+    } else if (res.error === 'already_claimed') {
+      statusEl.innerHTML = '<div class="banner warn">このQRコードではすでに記録済みです。</div>';
+    } else {
+      statusEl.innerHTML = '<div class="banner warn">記録に失敗しました。</div>';
     }
-    qrActivity = null; qrPoints = null;
-    document.getElementById('earn-password').value = '';
-    document.getElementById('earn-withqr').style.display = 'none';
-    document.getElementById('earn-noqr').style.display = 'block';
-    document.getElementById('earn-status').innerHTML = '<div class="banner">記録しました。ありがとうございました!</div>';
-    await loadData();
   } catch (e) {
-    alert('通信に失敗しました。時間をおいて再度お試しください。');
+    statusEl.innerHTML = '<div class="banner warn">通信に失敗しました。</div>';
   } finally {
     btn.disabled = false;
   }
 });
 
-function applyQr(activity, points) {
-  qrActivity = activity;
-  qrPoints = parseInt(points, 10);
-  document.getElementById('earn-label-display').textContent = activity;
-  document.getElementById('earn-points-display').textContent = points + 'pt';
-  document.getElementById('earn-noqr').style.display = 'none';
-  document.getElementById('earn-withqr').style.display = 'block';
-  document.getElementById('earn-status').innerHTML =
-    '<div class="banner">QRコードを読み込みました。会員番号とパスワードを入力して「記録する」を押してください。</div>';
-  switchTab('earn');
+async function applyToken(token) {
+  const statusEl = document.getElementById('earn-status');
+  statusEl.innerHTML = '<div class="banner">QRコードを確認しています…</div>';
+  try {
+    const data = await apiGet(token);
+    if (!data.tokenInfo || !data.tokenInfo.valid) {
+      statusEl.innerHTML = '<div class="banner warn">このQRコードは無効です(有効期限切れの可能性があります)。</div>';
+      return;
+    }
+    pendingToken = token;
+    document.getElementById('earn-label-display').textContent = data.tokenInfo.label;
+    document.getElementById('earn-points-display').textContent = data.tokenInfo.points + 'pt';
+    document.getElementById('earn-noqr').style.display = 'none';
+    document.getElementById('earn-withqr').style.display = 'block';
+    statusEl.innerHTML = '<div class="banner">パスワードを入力して「記録する」を押してください。</div>';
+  } catch (e) {
+    statusEl.innerHTML = '<div class="banner warn">通信に失敗しました。</div>';
+  }
 }
 
 function handleIncomingQr() {
   const params = new URLSearchParams(window.location.search);
-  const activity = params.get('activity');
-  const points = params.get('points');
-  if (activity && points) {
-    applyQr(activity, points);
+  const token = params.get('t');
+  if (token) {
     clearQueryParams();
+    if (auth) applyToken(token);
+    else pendingScanBeforeLogin(token);
   }
+}
+function pendingScanBeforeLogin(token) {
+  document.getElementById('login-status').innerHTML = '<div class="banner">QRコードを読み取りました。ログインすると記録できます。</div>';
+  const check = setInterval(() => {
+    if (auth) { clearInterval(check); applyToken(token); switchTab('earn'); }
+  }, 400);
 }
 function clearQueryParams() {
   if (window.location.search) history.replaceState(null, '', window.location.pathname);
 }
 
-// ---- 会員パスワードを忘れた場合(メール再設定) ----
-document.getElementById('forgot-link').addEventListener('click', () => {
+// ---- パスワードを忘れた場合(メール再設定) ----
+document.getElementById('login-forgot-link').addEventListener('click', () => {
   document.getElementById('reset-box').style.display = 'block';
   document.getElementById('reset-step2').style.display = 'none';
   document.getElementById('reset-hint').textContent = '';
@@ -479,18 +633,16 @@ document.getElementById('reset-cancel-btn').addEventListener('click', () => {
   document.getElementById('reset-box').style.display = 'none';
 });
 document.getElementById('reset-send-btn').addEventListener('click', async () => {
-  const number = parseInt(document.getElementById('earn-number').value, 10);
+  const email = document.getElementById('login-email').value.trim();
   const hintEl = document.getElementById('reset-hint');
-  if (!number) { hintEl.textContent = '会員番号を選んでください。'; return; }
+  if (!email) { hintEl.textContent = 'メールアドレスを入力してください。'; return; }
   const btn = document.getElementById('reset-send-btn');
   btn.disabled = true;
   try {
-    const res = await apiPost({ action: 'requestReset', target: 'member', number });
+    const res = await apiPost({ action: 'requestReset', target: 'member', email });
     if (res.ok) {
-      hintEl.textContent = '登録されたメールアドレスに確認コードを送信しました。';
+      hintEl.textContent = 'そのメールアドレスが登録されていれば、確認コードを送信しました。';
       document.getElementById('reset-step2').style.display = 'block';
-    } else if (res.error === 'no_email') {
-      hintEl.textContent = 'メールアドレスが登録されていません。係の人にご相談ください。';
     } else {
       hintEl.textContent = '送信に失敗しました。';
     }
@@ -501,29 +653,32 @@ document.getElementById('reset-send-btn').addEventListener('click', async () => 
   }
 });
 document.getElementById('reset-confirm-btn').addEventListener('click', async () => {
-  const number = parseInt(document.getElementById('earn-number').value, 10);
+  const email = document.getElementById('login-email').value.trim();
   const code = document.getElementById('reset-code').value.trim();
   const newPw = document.getElementById('reset-newpw').value;
   const newPw2 = document.getElementById('reset-newpw2').value;
   const hintEl = document.getElementById('reset-hint');
+  if (!email) { hintEl.textContent = 'メールアドレスを入力してください。'; return; }
   if (!code) { hintEl.textContent = '確認コードを入力してください。'; return; }
-  if (!newPw) { hintEl.textContent = '新しいパスワードを入力してください。'; return; }
+  if (!isValidPassword(newPw)) { hintEl.textContent = 'パスワードは英字と数字を両方含む6文字以上にしてください。'; return; }
   if (newPw !== newPw2) { hintEl.textContent = '新しいパスワードが一致しません。'; return; }
   const btn = document.getElementById('reset-confirm-btn');
   btn.disabled = true;
   try {
-    const res = await apiPost({ action: 'confirmReset', target: 'member', number, code, newPassword: newPw });
+    const res = await apiPost({ action: 'confirmReset', target: 'member', email, code, newPassword: newPw });
     if (res.ok) {
-      document.getElementById('earn-password').value = newPw;
+      document.getElementById('login-password').value = newPw;
       document.getElementById('reset-box').style.display = 'none';
       document.getElementById('reset-code').value = '';
       document.getElementById('reset-newpw').value = '';
       document.getElementById('reset-newpw2').value = '';
-      document.getElementById('earn-status').innerHTML = '<div class="banner">パスワードを再設定しました。</div>';
+      document.getElementById('login-status').innerHTML = '<div class="banner">パスワードを再設定しました。ログインしてください。</div>';
     } else if (res.error === 'invalid_code') {
       hintEl.textContent = '確認コードが違います。';
     } else if (res.error === 'expired') {
       hintEl.textContent = '確認コードの有効期限が切れました。もう一度送信してください。';
+    } else if (res.error === 'password_weak') {
+      hintEl.textContent = 'パスワードは英字と数字を両方含む6文字以上にしてください。';
     } else {
       hintEl.textContent = '再設定に失敗しました。';
     }
@@ -580,15 +735,26 @@ function scanFrame() {
 function handleScannedText(text) {
   try {
     const url = new URL(text);
-    const activity = url.searchParams.get('activity');
-    const points = url.searchParams.get('points');
-    if (activity && points) { applyQr(activity, points); return; }
+    const token = url.searchParams.get('t');
+    if (token) { applyToken(token); switchTab('earn'); return; }
   } catch (e) { /* not a URL */ }
-  alert('この町内会ポイント帳用のQRコードではないようです。');
+  alert('この操山町内会ポイント帳用のQRコードではないようです。');
 }
 
-handleIncomingQr();
-loadData();
+// ---- Tabs ----
+document.querySelectorAll('nav button[data-tab]').forEach(btn => {
+  btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+});
+function switchTab(tab) {
+  document.querySelectorAll('nav button[data-tab]').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  document.querySelectorAll('main section').forEach(s => s.classList.toggle('active', s.id === tab));
+}
+
+(async function init() {
+  await loadData();
+  handleIncomingQr();
+  await tryAutoLogin();
+})();
 </script>
 </body>
 </html>
