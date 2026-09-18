@@ -84,6 +84,12 @@
   .banner { background: var(--paper-deep); border: 1.4px solid var(--line); color: var(--ink); border-radius: 8px;
     padding: 12px 14px; font-size: 0.82rem; margin-bottom: 15px; line-height: 1.7; }
   .banner.warn { border-color: var(--minus); background: var(--minus-bg); color: var(--minus); }
+  .reset-icon { width: 52px; height: 52px; margin: 4px auto 10px; }
+  .reset-icon svg { width: 100%; height: 100%; display: block; }
+  .reset-title { text-align: center; font-family: 'Zen Old Mincho', serif; font-weight: 900; font-size: 1.08rem;
+    margin: 0 0 6px; color: var(--ink); }
+  .reset-rule { font-size: 0.76rem; font-weight: 700; color: var(--ink); background: var(--mint);
+    border-radius: 6px; padding: 8px 10px; margin: 12px 0 0; line-height: 1.6; }
 
   .divider { border: none; border-top: 1px solid var(--line); margin: 20px 0; }
   .sub-heading { font-size: 0.78rem; font-weight: 700; color: var(--ink-soft); margin: 0 0 10px; }
@@ -169,13 +175,23 @@
       <button type="button" class="link-btn" id="login-forgot-link">パスワードを忘れた場合はこちら</button>
 
       <div id="reset-box" class="banner" style="display:none;margin-top:14px;">
-        <p class="hint" id="reset-step1-text" style="margin-top:0;">メールアドレスを入力して、確認コードを送ってください。</p>
+        <div class="reset-icon" aria-hidden="true">
+          <svg viewBox="0 0 64 64">
+            <path d="M14 20a20 20 0 1 1 -3 22" fill="none" stroke="#15140F" stroke-width="4.2" stroke-linecap="round"/>
+            <path d="M7 13 L14 20 L21 12" fill="none" stroke="#15140F" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <rect x="21" y="30" width="22" height="18" rx="3.5" fill="#15140F"/>
+            <path d="M25.5 30v-6.5a6.5 6.5 0 0 1 13 0v6.5" fill="none" stroke="#15140F" stroke-width="4.2"/>
+          </svg>
+        </div>
+        <p class="reset-title">パスワードを再設定します</p>
+        <p class="hint" id="reset-step1-text" style="margin-top:0;text-align:center;">メールアドレスを入力して、確認コードを送ってください。</p>
         <label for="reset-email">メールアドレス</label>
         <input id="reset-email" type="email" placeholder="登録時に入力したメールアドレス">
         <button class="btn ghost" id="reset-send-btn">確認コードを送信する</button>
         <div id="reset-step2" style="display:none;">
           <label for="reset-code">確認コード(メールに記載)</label>
           <input id="reset-code" placeholder="6桁のコード">
+          <p class="reset-rule">英字と数字を両方含む6文字以上のパスワードにしてください。</p>
           <label for="reset-newpw">新しいパスワード</label>
           <input id="reset-newpw" type="password" placeholder="英字+数字を含む6文字以上">
           <label for="reset-newpw2">新しいパスワード(確認)</label>
@@ -214,6 +230,7 @@
     <button data-tab="earn" class="active">活動記録</button>
     <button data-tab="catalog">交換リスト</button>
     <button data-tab="history">ポイント履歴</button>
+    <button data-tab="settings">設定</button>
   </nav>
 
   <main>
@@ -269,6 +286,34 @@
         <div id="log-list"><div class="empty">まだ記録がありません</div></div>
       </div>
     </section>
+
+    <section id="settings">
+      <div class="card">
+        <h2>お名前</h2>
+        <label for="profile-name">お名前</label>
+        <input id="profile-name" placeholder="お名前">
+        <button class="btn ghost" id="save-name-btn">保存</button>
+        <p class="hint" id="profile-name-hint"></p>
+      </div>
+      <div class="card">
+        <h2>メールアドレス</h2>
+        <label for="profile-email">メールアドレス</label>
+        <input id="profile-email" type="email">
+        <button class="btn ghost" id="save-email-btn">保存</button>
+        <p class="hint" id="profile-email-hint"></p>
+      </div>
+      <div class="card">
+        <h2>パスワードを変更</h2>
+        <label for="pw-current">現在のパスワード</label>
+        <input id="pw-current" type="password">
+        <label for="pw-new">新しいパスワード</label>
+        <input id="pw-new" type="password" placeholder="英字+数字を含む6文字以上">
+        <label for="pw-new2">新しいパスワード(確認)</label>
+        <input id="pw-new2" type="password">
+        <button class="btn ghost" id="change-pw-btn">変更する</button>
+        <p class="hint" id="change-pw-hint"></p>
+      </div>
+    </section>
   </main>
 </div>
 
@@ -287,7 +332,6 @@
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzFM65bEL3PBsfU8ZUgqL5v9lfUwZ8BNcdsS0yszfSs-3nf8o5jpHJ_Z7TB9gC6rcY6/exec';
 const AUTH_KEY = 'townPointAuth';
 
-let members = [];
 let log = [];
 let catalog = [];
 let redemptions = [];
@@ -295,7 +339,7 @@ let pendingToken = null;
 let videoStream = null;
 let auth = null; // { number, password }
 
-function todayStr() { return new Date().toISOString().slice(0, 10); }
+function todayStr() { return new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Tokyo' }).format(new Date()); }
 function escapeHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 function isValidPassword(pw) { return /^(?=.*[A-Za-z])(?=.*[0-9]).{6,}$/.test(pw || ''); }
 
@@ -326,34 +370,37 @@ function loadAuth() {
 function saveAuth(a) { auth = a; localStorage.setItem(AUTH_KEY, JSON.stringify(a)); }
 function clearAuth() { auth = null; localStorage.removeItem(AUTH_KEY); }
 
-function balanceFor(number) {
-  return log.reduce((sum, e) => {
-    if (Number(e.number) !== Number(number)) return sum;
-    return sum + (e.type === 'earn' ? Number(e.points) : -Number(e.points));
-  }, 0);
+function currentBalance() {
+  return log.reduce((sum, e) => sum + (e.type === 'earn' ? Number(e.points) : -Number(e.points)), 0);
 }
-function pendingPointsFor(number) {
-  return redemptions.reduce((sum, r) => {
-    if (Number(r.number) !== Number(number) || r.status !== 'pending') return sum;
-    return sum + Number(r.points);
-  }, 0);
+function pendingPoints() {
+  return redemptions.reduce((sum, r) => sum + (r.status === 'pending' ? Number(r.points) : 0), 0);
 }
 
-async function loadData() {
+async function loadPublicData() {
   try {
     const data = await apiGet();
-    members = data.members || [];
-    log = data.log || [];
     catalog = data.catalog || [];
-    redemptions = data.redemptions || [];
-    if (auth) renderAppData();
   } catch (e) {
     document.getElementById('register-status').innerHTML = '<div class="banner warn">通信に失敗しました。WEB_APP_URLの設定をご確認ください。</div>';
   }
 }
+async function loadMyData() {
+  if (!auth) return;
+  try {
+    const res = await apiPost({ action: 'getMemberData', number: auth.number, password: auth.password });
+    if (res.ok) {
+      log = res.log || [];
+      redemptions = res.redemptions || [];
+      const nameEl = document.getElementById('profile-name');
+      if (nameEl && document.activeElement !== nameEl) nameEl.value = res.name || '';
+      renderAppData();
+    }
+  } catch (e) { /* 通信失敗時は前回のデータのまま表示を続ける */ }
+}
 
 function renderAppData() {
-  const bal = balanceFor(auth.number);
+  const bal = currentBalance();
   ['balance-earn', 'balance-catalog', 'balance-history'].forEach(id => {
     document.getElementById(id).innerHTML = bal + '<span>pt</span>';
   });
@@ -365,7 +412,7 @@ function renderAppData() {
 
 function renderRecentEarns() {
   const el = document.getElementById('recent-earn-list');
-  const mine = log.filter(l => Number(l.number) === Number(auth.number) && l.type === 'earn')
+  const mine = log.filter(l => l.type === 'earn')
     .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
   if (mine.length === 0) { el.innerHTML = '<div class="empty">まだ記録がありません</div>'; return; }
   el.innerHTML = mine.map(e => `
@@ -378,7 +425,7 @@ function renderRecentEarns() {
 function renderCatalog() {
   const el = document.getElementById('catalog-list');
   if (catalog.length === 0) { el.innerHTML = '<div class="empty">まだ交換できる景品はありません</div>'; return; }
-  const bal = balanceFor(auth.number) - pendingPointsFor(auth.number);
+  const bal = currentBalance() - pendingPoints();
   el.innerHTML = catalog.map(c => `
     <div class="catalog-item" data-id="${c.id}">
       <button class="catalog-item-btn" data-toggle="${c.id}">
@@ -414,7 +461,7 @@ function renderCatalog() {
         const res = await apiPost({ action: 'requestRedeem', number: auth.number, memberPassword: pwEl.value, catalogId: id });
         if (res.ok) {
           statusEl.innerHTML = '<div class="success-pill">' + successIcon() + '<span>交換を申請しました。管理者の対応をお待ちください。</span></div>';
-          await loadData();
+          await loadMyData();
         } else if (res.error === 'insufficient_points') {
           statusEl.innerHTML = '<p class="hint error">ポイントが足りていません。</p>';
         } else if (res.error === 'member_password') {
@@ -433,8 +480,7 @@ function renderCatalog() {
 
 function renderMyRequests() {
   const el = document.getElementById('my-requests-list');
-  const mine = redemptions.filter(r => Number(r.number) === Number(auth.number))
-    .sort((a, b) => (b.requestedAt || '').localeCompare(a.requestedAt || ''));
+  const mine = [...redemptions].sort((a, b) => (b.requestedAt || '').localeCompare(a.requestedAt || ''));
   if (mine.length === 0) { el.innerHTML = '<div class="empty">申請はまだありません</div>'; return; }
   const statusLabel = { pending: '確認中', done: '受け取り済み', rejected: '却下' };
   el.innerHTML = mine.map(r => `
@@ -449,8 +495,7 @@ function renderMyRequests() {
 
 function renderLog() {
   const el = document.getElementById('log-list');
-  const mine = log.filter(l => Number(l.number) === Number(auth.number))
-    .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  const mine = [...log].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
   if (mine.length === 0) { el.innerHTML = '<div class="empty">まだ記録がありません</div>'; return; }
   el.innerHTML = mine.map(e => {
     const sign = e.type === 'earn' ? '+' : '−';
@@ -470,7 +515,9 @@ function showApp() {
   document.getElementById('gate-wrap').style.display = 'none';
   document.getElementById('app-wrap').style.display = 'block';
   document.getElementById('auth-indicator').textContent = 'No.' + auth.number;
+  document.getElementById('profile-email').value = auth.email;
   renderAppData();
+  loadMyData();
 }
 
 async function tryAutoLogin() {
@@ -499,8 +546,10 @@ document.getElementById('login-btn').addEventListener('click', async () => {
     if (res.ok) {
       saveAuth({ email, password, number: res.number });
       statusEl.innerHTML = '';
-      await loadData();
+      await loadPublicData();
       showApp();
+    } else if (res.error === 'too_many_attempts') {
+      statusEl.innerHTML = '<p class="hint error">失敗が続いたため、しばらく時間をおいてからもう一度お試しください。</p>';
     } else {
       statusEl.innerHTML = '<p class="hint error">メールアドレスまたはパスワードが違います。</p>';
     }
@@ -514,6 +563,100 @@ document.getElementById('login-btn').addEventListener('click', async () => {
 document.getElementById('logout-btn').addEventListener('click', () => {
   clearAuth();
   showGate();
+});
+
+// ---- 設定:名前・メールアドレス・パスワード変更 ----
+document.getElementById('save-name-btn').addEventListener('click', async () => {
+  const name = document.getElementById('profile-name').value.trim();
+  const hintEl = document.getElementById('profile-name-hint');
+  if (!name) { hintEl.textContent = 'お名前を入力してください。'; hintEl.className = 'hint error'; return; }
+  const btn = document.getElementById('save-name-btn');
+  btn.disabled = true;
+  try {
+    const res = await apiPost({ action: 'updateProfile', number: auth.number, password: auth.password, name });
+    if (res.ok) {
+      hintEl.textContent = '保存しました。';
+      hintEl.className = 'hint';
+    } else if (res.error === 'member_password') {
+      hintEl.textContent = '保存に失敗しました(パスワードの確認でエラーが発生しました)。';
+      hintEl.className = 'hint error';
+    } else {
+      hintEl.textContent = '保存に失敗しました。';
+      hintEl.className = 'hint error';
+    }
+  } catch (e) {
+    hintEl.textContent = '通信に失敗しました。';
+    hintEl.className = 'hint error';
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+document.getElementById('save-email-btn').addEventListener('click', async () => {
+  const email = document.getElementById('profile-email').value.trim();
+  const hintEl = document.getElementById('profile-email-hint');
+  if (!email) { hintEl.textContent = 'メールアドレスを入力してください。'; hintEl.className = 'hint error'; return; }
+  const btn = document.getElementById('save-email-btn');
+  btn.disabled = true;
+  try {
+    const res = await apiPost({ action: 'updateProfile', number: auth.number, password: auth.password, email });
+    if (res.ok) {
+      saveAuth({ email, password: auth.password, number: auth.number });
+      hintEl.textContent = '保存しました。次回からはこのメールアドレスでログインしてください。';
+      hintEl.className = 'hint';
+    } else if (res.error === 'email_taken') {
+      hintEl.textContent = 'このメールアドレスはすでに使われています。';
+      hintEl.className = 'hint error';
+    } else if (res.error === 'member_password') {
+      hintEl.textContent = '保存に失敗しました(パスワードの確認でエラーが発生しました)。';
+      hintEl.className = 'hint error';
+    } else {
+      hintEl.textContent = '保存に失敗しました。';
+      hintEl.className = 'hint error';
+    }
+  } catch (e) {
+    hintEl.textContent = '通信に失敗しました。';
+    hintEl.className = 'hint error';
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+document.getElementById('change-pw-btn').addEventListener('click', async () => {
+  const current = document.getElementById('pw-current').value;
+  const p1 = document.getElementById('pw-new').value;
+  const p2 = document.getElementById('pw-new2').value;
+  const hintEl = document.getElementById('change-pw-hint');
+  if (!current) { hintEl.textContent = '現在のパスワードを入力してください。'; hintEl.className = 'hint error'; return; }
+  if (!isValidPassword(p1)) { hintEl.textContent = '新しいパスワードは英字と数字を両方含む6文字以上にしてください。'; hintEl.className = 'hint error'; return; }
+  if (p1 !== p2) { hintEl.textContent = '新しいパスワードが一致しません。'; hintEl.className = 'hint error'; return; }
+  const btn = document.getElementById('change-pw-btn');
+  btn.disabled = true;
+  try {
+    const res = await apiPost({ action: 'changePassword', number: auth.number, password: current, newPassword: p1 });
+    if (res.ok) {
+      saveAuth({ email: auth.email, password: p1, number: auth.number });
+      document.getElementById('pw-current').value = '';
+      document.getElementById('pw-new').value = '';
+      document.getElementById('pw-new2').value = '';
+      hintEl.textContent = 'パスワードを変更しました。';
+      hintEl.className = 'hint';
+    } else if (res.error === 'member_password') {
+      hintEl.textContent = '現在のパスワードが違います。';
+      hintEl.className = 'hint error';
+    } else if (res.error === 'password_weak') {
+      hintEl.textContent = '新しいパスワードは英字と数字を両方含む6文字以上にしてください。';
+      hintEl.className = 'hint error';
+    } else {
+      hintEl.textContent = '変更に失敗しました。';
+      hintEl.className = 'hint error';
+    }
+  } catch (e) {
+    hintEl.textContent = '通信に失敗しました。';
+    hintEl.className = 'hint error';
+  } finally {
+    btn.disabled = false;
+  }
 });
 
 // ---- 会員登録 ----
@@ -534,7 +677,7 @@ document.getElementById('register-btn').addEventListener('click', async () => {
     if (res.ok) {
       saveAuth({ email, password: p1, number: res.number });
       statusEl.innerHTML = '';
-      await loadData();
+      await loadPublicData();
       showApp();
       document.getElementById('earn-status').innerHTML =
         '<div class="success-pill">' + successIcon() + '<span>登録が完了しました。ようこそ!</span></div>';
@@ -577,7 +720,7 @@ document.getElementById('add-earn-btn').addEventListener('click', async () => {
       document.getElementById('earn-withqr').style.display = 'none';
       document.getElementById('earn-noqr').style.display = 'block';
       statusEl.innerHTML = '<div class="success-pill">' + successIcon() + '<span>記録しました。ありがとうございました!</span></div>';
-      await loadData();
+      await loadMyData();
     } else if (res.error === 'member_password') {
       statusEl.innerHTML = '<div class="banner warn">パスワードが違います。</div>';
     } else if (res.error === 'token_invalid') {
@@ -764,7 +907,7 @@ function switchTab(tab) {
 }
 
 (async function init() {
-  await loadData();
+  await loadPublicData();
   handleIncomingQr();
   await tryAutoLogin();
 })();
